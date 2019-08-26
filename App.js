@@ -1,14 +1,13 @@
 import React, {Component, Fragment} from 'react';
-import {View, Text} from 'react-native';
 
-import Login from './src/screens/login'
+// import LoginScreen from './src/screens/login/LoginScreen.js';
+
+import RootNavigator from './src/RootNavigator'
 
 class App extends React.Component {
     render(){
         return(
-            <Fragment>
-                <Login />
-            </Fragment>
+            <RootNavigator />
         )
     }
 }
