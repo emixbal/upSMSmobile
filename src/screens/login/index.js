@@ -1,16 +1,16 @@
 import React, {Component, Fragment} from 'react';
 import {View, Text} from 'react-native';
 
-import Login from './src/screens/login'
-
-class App extends React.Component {
+class Login extends React.Component {
     render(){
         return(
             <Fragment>
-                <Login />
+                <View>
+                    <Text>Login Screen</Text>
+                </View>
             </Fragment>
         )
     }
 }
 
-export default App;
+export default Login;
