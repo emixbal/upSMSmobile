@@ -6,6 +6,7 @@ import { Container, Content, Body, Title, Form, Input, Item, Header, Button, Tex
 class LoginScreen extends React.Component {
     static navigationOptions = {
         title: 'Login',
+        headerLeft: null
     };
     constructor(props) {
         super(props);
