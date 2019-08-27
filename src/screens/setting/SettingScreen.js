@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, AsyncStorage} from 'react-native';
 import { Container, Content, Body, Title, Form, Input, Item, Header, Button, Text} from 'native-base';
 
 
@@ -16,8 +16,13 @@ class SettingScreen extends React.Component {
         }
     }
 
-    handleButtonLogin(){
-        this.props.navigation.navigate('Home')
+    async handleLogoutButton(){
+        try {
+            await AsyncStorage.removeItem('token')
+            await this.props.navigation.navigate('Login')
+        } catch (e) {
+            alert('terjadi kesalahan');
+        }
     }
 
     render(){
@@ -27,6 +32,9 @@ class SettingScreen extends React.Component {
                     <Text>
                         SettingScreen
                     </Text>
+                    <Button onPress={()=>this.handleLogoutButton()}>
+                        <Text> Logout </Text>
+                    </Button>
                 </Content>
             </Container>
         )
