@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
-import {AsyncStorage} from 'react-native';
-import { Container, Content, Button, Text, View} from 'native-base';
+import {AsyncStorage, View, StyleSheet} from 'react-native';
+import { Container, Button, Text, Content} from 'native-base';
 
 
 class HomeScreen extends React.Component {
@@ -13,7 +13,10 @@ class HomeScreen extends React.Component {
             isLoading: true,
             email: '',
             password: '',
-            token:''
+            status:{
+                color:'#d9534f',
+                isConnected:false
+            }
         }
     }
 
@@ -24,12 +27,10 @@ class HomeScreen extends React.Component {
                 this.props.navigation.navigate('Login')
                 await this.setState({
                     isLoading:false,
-                    token: ''
                 })
             } else{
                 await this.setState({
                     isLoading:false,
-                    token: token
                 })
             }
         } catch (e) {
@@ -37,15 +38,17 @@ class HomeScreen extends React.Component {
         }
     }
 
-    async handleLogoutButton(){
-        try {
-            await AsyncStorage.removeItem('token')
-            await this.props.navigation.navigate('Login')
-            await this.setState({
-                token: ''
-            })
-        } catch (e) {
-            alert('terjadi kesalahan');
+    handleToggleButton(){
+        if(this.state.status.isConnected==false){
+            this.setState({status:{
+                color:'#5cb85c',
+                isConnected:true
+            }})
+        } else{
+            this.setState({status:{
+                color:'#d9534f',
+                isConnected:false
+            }})
         }
     }
 
@@ -59,27 +62,36 @@ class HomeScreen extends React.Component {
                 </View>
             )
         }
-        
-        if(this.state.token==''){
-            // this.handleGoBack()
-            this.props.navigation.navigate('Login')
-        }
         return(
             <Container>
                 <Content>
-                    <Text>
-                        Home
-                    </Text>
-                    <Text>
-                        {this.state.token}
-                    </Text>
-                    <Button onPress={()=>this.handleLogoutButton()}>
-                        <Text> Logout </Text>
-                    </Button>
+                    <View style={[this.styles.center]}>
+                        <Button rounded
+                            style={[this.styles.connectTogle, {backgroundColor:this.state.status.color}]}
+                            onPress={()=>this.handleToggleButton()}
+                        >
+                            <Text>
+                                {this.state.status.isConnected ? 'connected' : 'disconnected'}
+                            </Text>
+                        </Button>
+                    </View>
                 </Content>
             </Container>
         )
     }
+
+    styles = StyleSheet.create({
+        connectTogle: {
+            marginTop: 20,
+            marginBottom: 20,
+            color: '#fff',
+        },
+        center: {
+            justifyContent: 'center',
+            alignItems: 'center'
+        }
+    });
+
 }
 
 export default HomeScreen;
