@@ -14,19 +14,14 @@ const AppTabNav = createBottomTabNavigator(
         }
     },
     {
-        initialRouteName: 'Home',
-        defaultNavigationOptions: {
-            header: null,
-            // headerStyle: {
-            //   backgroundColor: '#0275d8',
-            // },
-            // headerTintColor: '#fff',
-            // headerTitleStyle: {
-            //     fontWeight: 'bold',
-            // },
-        }
+        initialRouteName: 'Home'
     }
 );
+
+AppTabNav.navigationOptions = {
+    // Hide the header from AppNavigator stack
+    headerTitle: "UpSMS Dashboard",
+};
 
 const AuthStackNav = createStackNavigator(
     {
