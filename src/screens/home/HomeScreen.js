@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {AsyncStorage, View, StyleSheet} from 'react-native';
 import { Container, Button, Text, Content} from 'native-base';
-
+import socketIOClient from 'socket.io-client';
 
 class HomeScreen extends React.Component {
     static navigationOptions = {
@@ -21,6 +21,12 @@ class HomeScreen extends React.Component {
     }
 
     async componentDidMount(){
+        const socket = socketIOClient('https://sms-project-socket.herokuapp.com/');
+        const id = 2;
+        socket.on(`chatpesan:${id}`, function (DataChat) {
+            alert(JSON.stringify(DataChat))
+        })
+
         try {
             const token = await AsyncStorage.getItem('token');
             if(token == null){
