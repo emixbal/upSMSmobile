@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {AsyncStorage, StyleSheet, BackHandler, Alert} from 'react-native';
 import { Container, Content, Form, Input, Item, Button, Text, View} from 'native-base';
+import axios from 'axios'
 
 
 class LoginScreen extends React.Component {
@@ -29,17 +30,19 @@ class LoginScreen extends React.Component {
 
     async handleButtonLogin(){
         try {
-            await this.setState({isLoading:true});
-            if (this.state.email=='Qaz' && this.state.password=='123'){
-                await this.setState({isLoading:false});
-                await AsyncStorage.setItem('token', '123');
+            const response = await axios.post('https://sms-project-trx.herokuapp.com/auth/login', {
+                email:`${this.state.email}`,
+                password:`${this.state.password}`
+            })
+            if(response.status==200){
+                await AsyncStorage.setItem('token', response.data.token);
                 await this.props.navigation.navigate('Home');
             } else{
                 alert('email atau password salah')
-                await this.setState({isLoading:false});
             }
         } catch (e) {
-            alert('terjadi kesalahan');
+            console.log(e);
+            alert('terjadi kesalahan')
         }
     }
 
