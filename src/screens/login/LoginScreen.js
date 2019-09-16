@@ -12,16 +12,33 @@ class LoginScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: false,
+            isLoading: true,
             email: '',
             password: '',
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
             return this.props.navigation.navigate("Login");
         });
+
+        try {
+            const token = await AsyncStorage.getItem('token');
+            if (token != null) {
+                this.props.navigation.navigate('Home')
+                await this.setState({
+                    isLoading: false,
+                })
+            } else {
+                await this.setState({
+                    isLoading: false,
+                })
+            }
+        } catch (e) {
+            alert('terjadi kesalahan');
+        }
+        
     }
     
     componentWillUnmount() {
@@ -30,17 +47,28 @@ class LoginScreen extends React.Component {
 
     async handleButtonLogin(){
         try {
+            this.setState({
+                isLoading: true,
+            })
+
             const response = await axios.post('https://sms-project-trx.herokuapp.com/auth/login', {
                 email:`${this.state.email}`,
                 password:`${this.state.password}`
             })
+
             if(response.status==200){
                 await AsyncStorage.setItem('token', response.data.token);
-                await this.props.navigation.navigate('Home');
+                this.props.navigation.navigate('Home');
             } else{
+                this.setState({
+                    isLoading: false,
+                })
                 alert('email atau password salah')
             }
         } catch (e) {
+            this.setState({
+                isLoading: false,
+            })
             console.log(e);
             alert('terjadi kesalahan')
         }
@@ -51,7 +79,7 @@ class LoginScreen extends React.Component {
             return(
                 <View>
                     <Text>
-                        Loading... Soon will be replace with modal spinner...
+                        Loading...
                     </Text>
                 </View>
             )
