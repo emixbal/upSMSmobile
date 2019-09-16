@@ -25,13 +25,33 @@ class HomeScreen extends React.Component {
     async componentDidMount() {
         const socket = socketIOClient('https://sms-project-socket.herokuapp.com/');
         const id = 2;
-        socket.on(`chatpesan:${id}`, function (DataChat) {
-            alert(JSON.stringify(DataChat))
+        socket.on(`chatpesan:${id}`, async function (DataChat) {
+            try {
+                const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.SEND_SMS,
+                    {
+                        title: 'YourProject App Sms Permission',
+                        message:
+                        'YourProject App needs access to your inbox ' +
+                        'so you can send messages in background.',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    },
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    DirectSms.sendDirectSms(DataChat.no_hp, DataChat.pesan);
+                } else {
+                    console.log('SMS permission denied');
+                }
+            } catch (err) {
+                console.warn(err);
+            }
         })
 
         try {
-            const token = await AsyncStorage.getItem('token');
-            if (token == null) {
+            const userData = await AsyncStorage.getItem('userData');
+            if (userData == null) {
                 this.props.navigation.navigate('Login')
                 await this.setState({
                     isLoading: false,
@@ -68,10 +88,9 @@ class HomeScreen extends React.Component {
         await this.sendDirectSms()
     }
 
-    // sendDirectSms() {
-    //     alert('sent')
-    //     DirectSms.sendDirectSms('081231760922', 'This is a direct message');
-    // }
+    sendDirectSms_() {
+        DirectSms.sendDirectSms('081231760922', 'This is a direct message');
+    }
 
     async sendDirectSms() {
         try {
